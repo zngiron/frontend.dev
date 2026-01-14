@@ -1,0 +1,60 @@
+---
+description: "Next.js 16 patterns and best practices including Server Components, Server Actions, metadata, and performance optimizations"
+alwaysApply: true
+globs:
+  - "**/*.tsx"
+  - "**/*.ts"
+  - "**/app/**"
+  - "**/route.ts"
+  - "**/page.tsx"
+  - "**/layout.tsx"
+---
+
+# Next.js 16 Patterns
+
+## Server vs Client Components
+
+- **Default to Server Components** - Use `"use client"` sparingly
+- **Client Components only when needed:**
+  - Interactivity (onClick, onChange, etc.)
+  - React hooks (useState, useEffect, etc.)
+  - Browser APIs (localStorage, window, etc.)
+  - Context providers that need client-side state
+
+## Server Actions
+
+- Use Server Actions for mutations when appropriate
+- Leverage Server Components for data fetching
+- Implement proper error handling in Server Actions
+
+## Metadata and Viewport
+
+- Use `generateMetadata` for dynamic metadata
+- Implement proper metadata and viewport configs
+- Use `next/third-parties` for third-party scripts
+
+## Route Handlers
+
+- Support both Next.js Route Handlers and external APIs
+- Use proper error handling with try-catch blocks
+- Use Zod for API response validation
+
+## Performance Optimizations
+
+- Use Next.js `Image` component with proper sizing and optimization
+- Implement code splitting with dynamic imports (`next/dynamic`)
+- Leverage Server Components for data fetching to reduce client bundle size
+- Use `next/font` for font optimization (Geist fonts already configured)
+- Use `Suspense` boundaries for async components
+
+## Environment Variables
+
+- Use environment variables from `@/lib/env` (validated with Zod)
+- Never access `process.env` directly
+- Always validate environment variables with Zod schemas
+
+## Loading and Error Boundaries
+
+- Implement proper loading and error boundaries
+- Use Next.js error.tsx and loading.tsx files
+- Handle loading and error states in UI components

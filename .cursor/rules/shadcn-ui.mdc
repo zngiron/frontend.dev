@@ -1,0 +1,34 @@
+---
+description: "shadcn/ui component patterns, composition, and New York style conventions"
+alwaysApply: false
+globs:
+  - "**/components/ui/**"
+  - "**/components/**/*.tsx"
+---
+
+# shadcn/ui Patterns
+
+## Component Usage
+
+- Use shadcn/ui components from `@/components/ui`
+- Follow shadcn/ui patterns and conventions
+- Use New York style components (as configured in `components.json`)
+
+## Composition Patterns
+
+- Extend shadcn/ui components via composition rather than modification
+- Prefer composition over prop drilling
+- Create wrapper components when needed for project-specific behavior
+
+## Form Components
+
+- Use shadcn/ui form components when available
+- Use React Hook Form with Zod validation
+- Create reusable form components
+- Handle form errors appropriately with user-friendly messages
+
+## Component Structure
+
+- Keep components small and focused
+- Extract reusable logic into custom hooks
+- Use meaningful variable and function names

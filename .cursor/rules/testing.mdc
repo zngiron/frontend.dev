@@ -1,0 +1,49 @@
+---
+description: "Testing guidelines using Vitest including component testing, mocking strategies, and best practices"
+alwaysApply: false
+globs:
+  - "**/*.test.ts"
+  - "**/*.test.tsx"
+  - "**/*.spec.ts"
+  - "**/*.spec.tsx"
+  - "**/__tests__/**"
+---
+
+# Testing Guidelines
+
+## Vitest Testing
+
+- Write Vitest tests for utilities and hooks
+- Test components with proper mocking
+- Follow testing best practices
+
+## Component Testing
+
+- Test components with proper mocking
+- Test user interactions and edge cases
+- Mock external dependencies appropriately
+
+## Test Organization
+
+- Organize tests alongside source files or in `__tests__` directories
+- Use descriptive test names that explain what is being tested
+- Group related tests using `describe` blocks
+
+## Mocking
+
+- Mock external dependencies appropriately
+- Mock API calls and external services
+- Use Vitest's mocking utilities effectively
+
+## Test Coverage
+
+- Aim for good test coverage of critical paths
+- Test edge cases and error conditions
+- Test both happy paths and error scenarios
+
+## Best Practices
+
+- Keep tests focused and isolated
+- Use proper setup and teardown
+- Clean up after tests
+- Test behavior, not implementation details

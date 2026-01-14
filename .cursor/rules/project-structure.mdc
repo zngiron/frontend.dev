@@ -1,0 +1,58 @@
+---
+description: "Project-specific file organization, path aliases, and directory structure"
+alwaysApply: true
+globs:
+  - "**/*"
+---
+
+# Project Structure
+
+## Project Context
+
+This is a Next.js 16.1.1 project using:
+- React 19 with React Compiler enabled
+- Tailwind CSS v4 (using `@import 'tailwindcss'`)
+- shadcn/ui components (New York style)
+- TypeScript with strict mode
+- Biome for linting/formatting
+- Path aliases: `@/*` → `./src/*`
+
+## File Organization
+
+### Components
+
+`@/components/{common,core,layout,ui}`
+- `common/` - Shared/common components
+- `core/` - Core providers and scripts
+- `layout/` - Layout components (header, footer, etc.)
+- `ui/` - shadcn/ui components
+
+### Utilities
+
+- `@/lib` - Helper functions and utilities
+
+### Hooks
+
+- `@/hooks` - Custom React hooks
+
+### Types
+
+- `@/types` - TypeScript type definitions
+
+### Stores
+
+- `@/data/stores` - Zustand stores
+
+### API Utilities
+
+- `@/data/api` - API-related utilities
+
+## Path Aliases
+
+Use path aliases consistently:
+- `@/components` for components
+- `@/lib` for utilities
+- `@/hooks` for custom hooks
+- `@/types` for type definitions
+- `@/data/stores` for Zustand stores
+- `@/data/api` for API utilities

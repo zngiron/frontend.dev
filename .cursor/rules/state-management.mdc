@@ -1,0 +1,48 @@
+---
+description: "State management patterns using Zustand for global UI state, React Query for server state, and useState for local state"
+alwaysApply: false
+globs:
+  - "**/stores/**"
+  - "**/hooks/**"
+  - "**/*.tsx"
+  - "**/data/**"
+---
+
+# State Management Rules
+
+## Zustand - Global UI State
+
+Use Zustand (`@/data/stores`) for:
+- Theme preferences
+- Modal/sidebar open/close states
+- UI preferences (sidebar collapsed, etc.)
+- Client-side only state that needs to persist across components
+
+## React Query - Server State
+
+Use React Query (`@tanstack/react-query`) for:
+- Data fetching and caching
+- API responses
+- Server-side data synchronization
+
+**React Query Best Practices:**
+- Use `getQueryClient()` from `@/lib/client` for React Query setup
+- Use proper query keys that reflect the data structure
+- Implement optimistic updates when appropriate
+- Handle loading, error, and success states properly
+- Use React Query DevTools in development
+- Configure staleTime and refetchOnWindowFocus appropriately
+
+## Local State - useState/useReducer
+
+Use `useState/useReducer` for:
+- Form inputs
+- Component-specific UI state
+- Temporary state that doesn't need to be shared
+
+## Data Fetching
+
+- Use React Query hooks for all data fetching
+- Support both Next.js Route Handlers and external APIs
+- Use `@/lib/request` utility for API calls
+- Use proper query keys that reflect the data structure

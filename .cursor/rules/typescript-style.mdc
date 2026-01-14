@@ -1,0 +1,60 @@
+---
+description: "TypeScript best practices, code style guidelines, import organization, and type definitions"
+alwaysApply: false
+globs:
+  - "**/*.ts"
+  - "**/*.tsx"
+---
+
+# TypeScript and Code Style
+
+## TypeScript Best Practices
+
+- Use strict typing - avoid `any` types
+- Use proper type inference when possible
+- Leverage TypeScript utility types (Pick, Omit, Partial, etc.)
+- Use type imports for type-only imports: `import type { ... }`
+- Define types in `@/types` directory when shared across files
+- Use Zod schemas for runtime validation that also provide types
+
+## Code Style
+
+Follow Biome configuration:
+- 2-space indent
+- Single quotes for strings
+- 120 character line width
+
+## Import Organization
+
+Organize imports according to Biome rules:
+
+1. Type imports
+2. Blank line
+3. React imports
+4. Next.js imports
+5. Blank line
+6. Package imports
+7. Blank line
+8. `@/components/**` imports
+9. Blank line
+10. `@/lib/**` imports
+11. Blank line
+12. `@/hooks/**` imports
+13. Blank line
+14. Other alias imports
+
+## Path Aliases
+
+Use path aliases consistently:
+- `@/components` for components
+- `@/lib` for utilities
+- `@/hooks` for custom hooks
+- `@/types` for type definitions
+- `@/data/stores` for Zustand stores
+- `@/data/api` for API utilities
+
+## Additional Guidelines
+
+- **No JSDoc comments** - Write self-documenting code with meaningful names
+- Use meaningful variable and function names
+- Keep components small and focused (single responsibility)

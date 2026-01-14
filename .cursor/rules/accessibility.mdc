@@ -1,0 +1,53 @@
+---
+description: "Accessibility guidelines including ARIA attributes, keyboard navigation, semantic HTML, and WCAG compliance"
+alwaysApply: false
+globs:
+  - "**/*.tsx"
+  - "**/*.html"
+---
+
+# Accessibility Guidelines
+
+Accessibility is important. Always include:
+
+## ARIA Attributes
+
+- Proper ARIA attributes (`aria-label`, `aria-describedby`, `aria-hidden`, etc.)
+- Use ARIA attributes when semantic HTML is not sufficient
+- Ensure ARIA attributes are properly associated with elements
+
+## Keyboard Navigation
+
+- Keyboard navigation support (tab order, focus management)
+- Ensure all interactive elements are keyboard accessible
+- Provide proper focus management for modals and dynamic content
+
+## Semantic HTML
+
+- Use semantic HTML elements (`<button>`, `<nav>`, `<main>`, `<article>`, `<section>`, etc.)
+- Use appropriate heading hierarchy (h1, h2, h3, etc.)
+- Use proper form labels and associations
+
+## Focus Management
+
+- Proper focus management for modals and dynamic content
+- Ensure focus is trapped in modals
+- Return focus to trigger element when closing modals
+
+## Images
+
+- Alt text for images (descriptive, not redundant)
+- Decorative images should have empty alt text: `alt=""`
+- Informative images should have descriptive alt text
+
+## Color and Contrast
+
+- Color contrast that meets WCAG standards (use semantic color tokens)
+- Don't rely solely on color to convey information
+- Ensure sufficient contrast ratios (minimum 4.5:1 for text)
+
+## Screen Readers
+
+- Screen reader friendly markup
+- Use proper landmarks and regions
+- Ensure content is announced correctly by screen readers

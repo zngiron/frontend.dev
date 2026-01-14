@@ -1,0 +1,84 @@
+---
+description: "Tailwind CSS v4 guidelines, class organization rules, and styling best practices"
+alwaysApply: false
+globs:
+  - "**/*.tsx"
+  - "**/*.css"
+  - "**/globals.css"
+---
+
+# Tailwind CSS v4 Guidelines
+
+## General Rules
+
+- Prefer standard utility classes over arbitrary values
+- Use `cn()` utility from `@/lib/utils` for conditional classes
+- Leverage CSS variables from `globals.css` (OKLCH color system)
+- Use semantic color tokens (e.g., `bg-primary`, `text-foreground`, `border-border`)
+- Follow Tailwind v4 patterns with `@theme inline`
+- Use `@custom-variant` for dark mode
+
+## Class Organization in React Components
+
+**Use `cn()` utility ONLY when:**
+- Multiple categories are present, OR
+- Classes are conditional
+
+**If only one category applies, use inline className without `cn()`**
+
+**Organize classes in this exact order (grouped by category):**
+
+1. **Root/Group** - Container classes, group classes (e.g., `container`, `group`)
+2. **Overflow, Visibility, Opacity** - `overflow-*`, `visibility-*`, `opacity-*`
+3. **Positioning + Z-index** - `position`, `top`, `right`, `bottom`, `left`, `inset-*`, `z-index`
+4. **Display + Box Model** - `display`, `width`, `height`, `min-*`, `max-*`, `margin`, `padding`, `border`, `border-radius`
+5. **Background + Typography** - `background-*`, `bg-*`, `gradient-*`, `font-*`, `text-*`, `leading-*`, `tracking-*`
+6. **Animation/Transition** - `animate-*`, `transition-*`, `duration-*`, `ease-*`, `delay-*`
+7. **Interactivity** - `cursor-*`, `pointer-events-*`, `user-select-*`
+8. **Responsive** - `sm:`, `md:`, `lg:`, `xl:`, `2xl:` variants
+9. **Dark Mode** - `dark:` variants
+
+**Class Sorting Within Categories:**
+
+- Within each category, sort alphabetically when possible
+- For display + box model: display → width/height → min/max → margin → padding → border → border-radius
+- For background + typography: background → bg → gradient → font-family → font-size → font-weight → line-height → text-align → text-color
+- For animation: animate → transition → duration → ease → delay
+- Responsive variants should mirror the same order as base classes
+- Group related utilities together (e.g., `flex flex-col` together)
+
+**Examples:**
+
+```tsx
+// Multiple categories - use cn()
+<div className={cn(
+  'container group',                   // Root/Group
+  'overflow-hidden opacity-100',      // Overflow, Visibility, Opacity
+  'relative top-0 left-0 z-10',       // Positioning + Z-index
+  'flex w-full h-screen p-4',          // Display + Box Model
+  'bg-background text-foreground font-sans', // Background + Typography
+  'transition-all duration-300',      // Animation/Transition
+  'cursor-pointer',                    // Interactivity
+  'sm:p-6 lg:p-8',                    // Responsive
+  'dark:bg-card'                      // Dark Mode
+)} />
+
+// Single category - no cn() needed
+<div className="flex flex-col items-center justify-center gap-4" />
+
+// Conditional classes - use cn()
+<div className={cn(
+  'p-4 rounded-lg',
+  isActive && 'bg-primary text-primary-foreground',
+  isDisabled && 'opacity-50 cursor-not-allowed'
+)} />
+```
+
+## Tailwind CSS v4 Specific
+
+- Use `@import 'tailwindcss'` syntax in CSS files
+- Leverage CSS variables for theming (defined in `globals.css`)
+- Use `@custom-variant` for dark mode: `@custom-variant dark (&:is(.dark *))`
+- Prefer semantic color tokens over hardcoded colors
+- Use `@theme inline` for theme customization
+- Take advantage of Tailwind v4's improved performance and features

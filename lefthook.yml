@@ -1,0 +1,21 @@
+commit-msg:
+  commands:
+    commitlint:
+      run: bunx --yes commitlint --edit {1}
+      fail_text: "Commit message does not follow the conventional commit format. Please check: https://www.conventionalcommits.org/"
+
+pre-commit:
+  commands:
+    format:
+      run: bun run format
+      stage_fixed: true
+      fail_text: "Code formatting failed. Files have been formatted automatically. Please review and commit again."
+    lint:
+      run: bun run lint
+      fail_text: "Linting failed. Please fix the errors above before committing."
+
+pre-push:
+  commands:
+    type-check:
+      run: bunx --yes tsc --noEmit
+      fail_text: "Type checking failed. Please fix TypeScript errors before pushing."

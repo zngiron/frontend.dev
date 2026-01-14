@@ -1,0 +1,48 @@
+---
+description: "Error handling patterns including try-catch blocks, error logging, error boundaries, and user-friendly error messages"
+alwaysApply: false
+globs:
+  - "**/*.ts"
+  - "**/*.tsx"
+  - "**/api/**"
+  - "**/route.ts"
+---
+
+# Error Handling
+
+## Try-Catch Blocks
+
+- Use try-catch blocks for async operations
+- Handle errors appropriately in all async functions
+- Never let errors bubble up unhandled
+
+## Error Logging
+
+- Log errors using `@/lib/logger` (logger.error, logger.httpError)
+- Include context in error logs (endpoint, method, etc.)
+- Never expose sensitive error details to users
+
+## Error Messages
+
+- Provide user-friendly error messages
+- Never expose sensitive error details to users
+- Format errors consistently using logger utilities
+
+## Error States in UI
+
+- Handle loading and error states in UI components
+- Show appropriate error messages to users
+- Provide retry mechanisms when appropriate
+
+## Error Boundaries
+
+- Use error boundaries for React component errors
+- Implement proper error boundaries for route segments
+- Use Next.js error.tsx files for error boundaries
+
+## API Error Handling
+
+- Use proper error handling with try-catch blocks in API routes
+- Use Zod for API response validation
+- Return appropriate HTTP status codes
+- Handle both client and server-side errors

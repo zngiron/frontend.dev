@@ -1,0 +1,42 @@
+---
+description: "React component patterns, composition, hooks usage, and component structure best practices"
+alwaysApply: false
+globs:
+  - "**/*.tsx"
+  - "**/components/**"
+---
+
+# React Component Patterns
+
+## Component Structure
+
+- Keep components small and focused (single responsibility)
+- Prefer composition over prop drilling
+- Extract reusable logic into custom hooks in `@/hooks`
+- Use meaningful variable and function names
+
+## Component Composition
+
+- Prefer composition over prop drilling
+- Use shadcn/ui components from `@/components/ui`
+- Extend components via composition rather than modification
+
+## Hooks Usage
+
+- Extract reusable logic into custom hooks
+- Use hooks appropriately (useState, useEffect, useMemo, etc.)
+- Memoize expensive computations with `useMemo`
+- Optimize re-renders with `React.memo` when needed
+
+## React 19 Features
+
+- Use React 19 features when beneficial
+- Leverage React Compiler optimizations
+- Use async Server Components when appropriate
+
+## Performance
+
+- Use `React.lazy()` for client components when appropriate
+- Memoize expensive computations with `useMemo`
+- Optimize re-renders with `React.memo` when needed
+- Use `Suspense` boundaries for async components
