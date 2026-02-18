@@ -1,49 +1,76 @@
 ---
-description: "Testing guidelines using Vitest including component testing, mocking strategies, and best practices"
-alwaysApply: false
-globs:
-  - "**/*.test.ts"
-  - "**/*.test.tsx"
-  - "**/*.spec.ts"
-  - "**/*.spec.tsx"
-  - "**/__tests__/**"
+description: "Playwright E2E testing: structure, selectors, accessibility audits, and test conventions"
+alwaysApply: true
 ---
 
-# Testing Guidelines
+# Testing
 
-## Vitest Testing
+## Stack
 
-- Write Vitest tests for utilities and hooks
-- Test components with proper mocking
-- Follow testing best practices
+@playwright/test + @axe-core/playwright. Install when ready to implement.
 
-## Component Testing
+## File Organization
 
-- Test components with proper mocking
-- Test user interactions and edge cases
-- Mock external dependencies appropriately
+```
+tests/
+├── accessibility.spec.ts       # WCAG audits across pages
+├── auth.spec.ts                # Feature: login, register, logout
+├── checkout.spec.ts            # Feature: cart → payment → confirmation
+├── dashboard.spec.ts           # Page: dashboard functionality
+├── settings.spec.ts            # Page: settings
+└── playwright.config.ts
+```
 
-## Test Organization
+Feature flows: name by feature. Single-page tests: name by page.
 
-- Organize tests alongside source files or in `__tests__` directories
-- Use descriptive test names that explain what is being tested
-- Group related tests using `describe` blocks
+## Selector Priority
 
-## Mocking
+1. ARIA roles — `getByRole('button', { name: 'Submit' })`
+2. Labels — `getByLabel('Email')`
+3. Placeholder — `getByPlaceholder('Search...')`
+4. Text — `getByText('Welcome back')`
+5. Test ID — `getByTestId('...')` (last resort)
 
-- Mock external dependencies appropriately
-- Mock API calls and external services
-- Use Vitest's mocking utilities effectively
+Never CSS selectors or XPath.
 
-## Test Coverage
+## Test Structure
 
-- Aim for good test coverage of critical paths
-- Test edge cases and error conditions
-- Test both happy paths and error scenarios
+```tsx
+import { expect, test } from '@playwright/test';
 
-## Best Practices
+test.describe('authentication', () => {
+  test('should log in with valid credentials', async ({ page }) => {
+    await page.goto('/login');
+    await page.getByLabel('Email').fill('user@example.com');
+    await page.getByLabel('Password').fill('password123');
+    await page.getByRole('button', { name: 'Sign In' }).click();
 
-- Keep tests focused and isolated
-- Use proper setup and teardown
-- Clean up after tests
-- Test behavior, not implementation details
+    await expect(page).toHaveURL('/dashboard');
+    await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible();
+  });
+});
+```
+
+## Principles
+
+- Test behavior, not implementation
+- Each test isolated — no shared state
+- Descriptive names: `should show error with invalid credentials`
+- Arrange-Act-Assert
+- No hardcoded waits — use auto-waiting
+- One assertion per concern
+
+## Accessibility Audits
+
+```tsx
+import AxeBuilder from '@axe-core/playwright';
+import { expect, test } from '@playwright/test';
+
+test('home page passes accessibility audit', async ({ page }) => {
+  await page.goto('/');
+  const results = await new AxeBuilder({ page }).withTags(['wcag2aaa']).analyze();
+  expect(results.violations).toEqual([]);
+});
+```
+
+Run audits for every critical page. Add `data-testid` only when ARIA selectors are insufficient.

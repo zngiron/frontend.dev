@@ -1,0 +1,100 @@
+---
+description: "State management: Zustand for UI state, React Query for server state, data fetching, and error handling"
+alwaysApply: true
+---
+
+# React State and Data Fetching
+
+## Three-Tier State Model
+
+| Tier | Tool | Use For |
+|------|------|---------|
+| Local | `useState` / `useReducer` | Form inputs, toggles, component-specific UI |
+| Global UI | Zustand (`@/data/stores/`) | Theme, modals, sidebar, UI preferences |
+| Server | React Query (`@/hooks/` + `@/data/api/`) | API data, caching, synchronization |
+
+Never cache server data in Zustand. Never use React Query for client-only UI state.
+
+## Zustand — Global UI State
+
+One flat store per domain. Separate `State` and `Actions` interfaces:
+
+```tsx
+// @/data/stores/layout.store.ts
+import { create } from 'zustand';
+
+interface LayoutState {
+  isMenuOpen: boolean;
+}
+
+interface LayoutActions {
+  openMenu: () => void;
+  closeMenu: () => void;
+  toggleMenu: () => void;
+}
+
+export const useLayoutStore = create<LayoutState & LayoutActions>((set) => ({
+  isMenuOpen: false,
+  openMenu: () => set({ isMenuOpen: true }),
+  closeMenu: () => set({ isMenuOpen: false }),
+  toggleMenu: () => set((state) => ({ isMenuOpen: !state.isMenuOpen })),
+}));
+```
+
+Naming: `use[Domain]Store`, file: `[domain].store.ts`.
+
+## React Query — Server State
+
+Architecture: `@/data/api/[domain].ts` (API functions) → `@/hooks/use-[domain].ts` (query/mutation hooks) → component.
+
+```tsx
+// @/data/api/users.ts
+export function getUsers(): Promise<User[]> {
+  return request<User[]>({ method: RequestMethod.GET, endpoint: '/users' });
+}
+
+export function createUser(input: CreateUserInput): Promise<User> {
+  return request<User>({ method: RequestMethod.POST, endpoint: '/users', params: input });
+}
+```
+
+```tsx
+// @/hooks/use-users.ts
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
+
+import { createUser, getUsers } from '@/data/api/users';
+
+export function useUsers() {
+  return useQuery({ queryKey: ['users'], queryFn: getUsers });
+}
+
+export function useCreateUser() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: createUser,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+      toast.success('User created');
+    },
+    onError: (error) => toast.error(error.message),
+  });
+}
+```
+
+### Query Keys
+
+Arrays, nested hierarchically: `['users']`, `['users', id]`, `['users', userId, 'posts']`. Include all variables the query depends on.
+
+### Best Practices
+
+- Always handle `onError` in `useMutation` with `toast.error()`
+- Use `enabled` for conditional fetching, `select` for data transformation
+- Use `getQueryClient()` from `@/lib/client`
+
+## Error Handling
+
+- Async errors → `toast.error()` (Sonner)
+- Form validation → inline via React Hook Form + Zod
+- Server errors → log with `@/lib/logger`, toast to user
+- Never expose raw error messages

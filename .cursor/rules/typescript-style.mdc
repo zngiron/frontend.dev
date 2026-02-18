@@ -1,60 +1,100 @@
 ---
-description: "TypeScript best practices, code style guidelines, import organization, and type definitions"
-alwaysApply: false
-globs:
-  - "**/*.ts"
-  - "**/*.tsx"
+description: "TypeScript strict conventions: no any, no assertions, explicit types, interface vs type, Zod, and Biome formatting"
+alwaysApply: true
 ---
 
-# TypeScript and Code Style
+# TypeScript Style
 
-## TypeScript Best Practices
+## Strict Rules
 
-- Use strict typing - avoid `any` types
-- Use proper type inference when possible
-- Leverage TypeScript utility types (Pick, Omit, Partial, etc.)
-- Use type imports for type-only imports: `import type { ... }`
-- Define types in `@/types` directory when shared across files
-- Use Zod schemas for runtime validation that also provide types
+- **No `any`** — use `unknown` + type guards
+- **No `as` assertions** — use type guards, generics, or `satisfies`
+- **No `!` non-null assertions** — handle nullability explicitly
+- **No `enum`** — use `as const` objects or union types
+- **No `namespace`** — use ES modules
+- **No JSDoc** — self-documenting code with descriptive names
+- **Explicit return types** on all exported functions and hooks
 
-## Code Style
+## Interface vs Type
 
-Follow Biome configuration:
-- 2-space indent
-- Single quotes for strings
-- 120 character line width
+`interface` for object shapes, props, API responses. `type` for unions, intersections, mapped types:
 
-## Import Organization
+```tsx
+interface UserCardProps {
+  user: User;
+  isCompact?: boolean;
+  onSelect: (id: string) => void;
+}
 
-Organize imports according to Biome rules:
+type Status = 'active' | 'inactive' | 'pending';
+type Result<T> = { data: T; error: null } | { data: null; error: Error };
+```
 
-1. Type imports
-2. Blank line
-3. React imports
-4. Next.js imports
-5. Blank line
-6. Package imports
-7. Blank line
-8. `@/components/**` imports
-9. Blank line
-10. `@/lib/**` imports
-11. Blank line
-12. `@/hooks/**` imports
-13. Blank line
-14. Other alias imports
+## Enum Alternatives
 
-## Path Aliases
+```tsx
+const STATUS = { active: 'active', inactive: 'inactive', pending: 'pending' } as const;
+type Status = (typeof STATUS)[keyof typeof STATUS];
 
-Use path aliases consistently:
-- `@/components` for components
-- `@/lib` for utilities
-- `@/hooks` for custom hooks
-- `@/types` for type definitions
-- `@/data/stores` for Zustand stores
-- `@/data/api` for API utilities
+type Variant = 'default' | 'destructive' | 'outline';
+```
 
-## Additional Guidelines
+## Type Imports
 
-- **No JSDoc comments** - Write self-documenting code with meaningful names
-- Use meaningful variable and function names
-- Keep components small and focused (single responsibility)
+Always `import type` for type-only imports:
+
+```tsx
+import type { ReactNode, MouseEvent } from 'react';
+import type { User } from '@/data/api/users';
+```
+
+## Clean Function Signatures
+
+Named `interface` for complex params — keep signatures readable:
+
+```tsx
+interface FormatPriceParams {
+  amount: number;
+  currency: string;
+}
+
+export function formatPrice({ amount, currency }: FormatPriceParams): string {
+  return new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(amount);
+}
+
+// 1-2 primitives can be inline
+export function getUser(id: string): Promise<User> { ... }
+```
+
+Arrow functions for local handlers:
+
+```tsx
+const handleClick = (event: MouseEvent<HTMLButtonElement>): void => {
+  event.preventDefault();
+};
+```
+
+## Code Style (Biome)
+
+2-space indent, single quotes, 120 char width, trailing commas, semicolons.
+
+## Zod for Runtime Validation
+
+```tsx
+const userSchema = z.object({
+  id: z.string(),
+  name: z.string().min(1),
+  email: z.email(),
+});
+
+type User = z.infer<typeof userSchema>;
+```
+
+## Nullability
+
+```tsx
+const user = users.find((u) => u.id === id);
+if (!user) throw new Error(`User ${id} not found`);
+
+const name = user?.profile?.displayName ?? 'Anonymous';
+```

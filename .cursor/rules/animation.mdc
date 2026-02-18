@@ -1,0 +1,141 @@
+---
+description: "Animation: motion/react as the sole animation system, spring physics, scroll, gestures, and accessibility"
+alwaysApply: true
+---
+
+# Animation
+
+## Core Principle
+
+**Tailwind = how things look. motion/react = how things move.**
+
+motion/react handles every transition, hover, entrance, exit, gesture, and scroll animation. Tailwind is static styling only — no `transition-*` or `animate-*` in custom components.
+
+> shadcn/ui uses `tw-animate-css` internally. Don't use it in custom components.
+
+## Spring Presets
+
+| Preset | Config | Use For |
+|--------|--------|---------|
+| Snappy | `stiffness: 400, damping: 30` | Buttons, toggles, micro-interactions |
+| Smooth | `stiffness: 300, damping: 30` | Cards, panels, modals |
+| Gentle | `stiffness: 200, damping: 25` | Page transitions, large elements |
+| Bouncy | `bounce: 0.3, duration: 0.6` | Playful elements, notifications |
+
+Duration-based only for pure opacity fades (150-250ms, `easeOut`).
+
+## Interactive States
+
+```tsx
+<motion.button
+  whileHover={{ scale: 1.02 }}
+  whileTap={{ scale: 0.97 }}
+  whileFocus={{ boxShadow: '0 0 0 3px var(--ring)' }}
+  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+  className="px-4 py-2 rounded-lg bg-primary text-primary-foreground"
+>
+  Click me
+</motion.button>
+```
+
+## Loading
+
+```tsx
+// Spinner
+<motion.div
+  animate={{ rotate: 360 }}
+  transition={{ repeat: Infinity, duration: 0.8, ease: 'linear' }}
+  className="size-5 rounded-full border-2 border-muted border-t-primary"
+/>
+
+// Skeleton
+<motion.div
+  animate={{ opacity: [0.4, 1, 0.4] }}
+  transition={{ repeat: Infinity, duration: 1.5, ease: 'easeInOut' }}
+  className="h-4 w-full rounded bg-muted"
+/>
+```
+
+## Enter/Exit
+
+```tsx
+<AnimatePresence mode="wait">
+  {isVisible && (
+    <motion.div
+      key="modal"
+      initial={{ opacity: 0, scale: 0.95, y: 10 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.95, y: 10 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+    />
+  )}
+</AnimatePresence>
+```
+
+`mode="wait"` for sequential (pages, tabs). `mode="popLayout"` for cross-fade.
+
+## Staggered Lists
+
+```tsx
+const container = {
+  hidden: { opacity: 0 },
+  show: { opacity: 1, transition: { staggerChildren: 0.05 } },
+};
+
+const item = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 30 } },
+};
+
+<motion.ul variants={container} initial="hidden" animate="show">
+  {items.map((entry) => (
+    <motion.li key={entry.id} variants={item}>{entry.name}</motion.li>
+  ))}
+</motion.ul>
+```
+
+## Layout, Gestures, Scroll
+
+```tsx
+// Shared layout
+<motion.div layout layoutId={`card-${id}`}>
+  {isExpanded ? <ExpandedView /> : <CollapsedView />}
+</motion.div>
+
+// Drag
+<motion.div drag="x" dragConstraints={{ left: -200, right: 200 }} dragElastic={0.1} />
+
+// Scroll reveal
+<motion.div
+  initial={{ opacity: 0, y: 50 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  viewport={{ once: true, margin: '-100px' }}
+  transition={{ type: 'spring', stiffness: 200, damping: 25 }}
+/>
+
+// Parallax
+const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] });
+const y = useTransform(scrollYProgress, [0, 1], [100, -100]);
+```
+
+## Reduced Motion
+
+Always respect `prefers-reduced-motion` — remove movement, keep opacity:
+
+```tsx
+const shouldReduceMotion = useReducedMotion();
+
+<motion.div
+  initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={shouldReduceMotion ? { duration: 0.15 } : { type: 'spring', stiffness: 300, damping: 30 }}
+/>
+```
+
+## Performance
+
+- Animate only `transform` and `opacity` (GPU-accelerated)
+- Use `layout` prop instead of animating width/height
+- `viewport={{ once: true }}` for one-shot reveals
+- Stagger only visible items
+- Nothing should exceed 500ms

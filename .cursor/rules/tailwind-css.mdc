@@ -1,0 +1,75 @@
+---
+description: "Tailwind CSS v4: class organization, cn() utility, OKLCH theming, semantic tokens, responsive, and WCAG AAA contrast"
+alwaysApply: true
+---
+
+# Tailwind CSS
+
+## v4 Configuration
+
+CSS-based config (no `tailwind.config.js`): `@import 'tailwindcss'`, `@import 'tw-animate-css'`, `@theme inline`, `@custom-variant dark`. OKLCH color system.
+
+## Semantic Tokens
+
+Always semantic tokens — never hardcoded colors:
+
+```tsx
+// Use these
+<div className="bg-background text-foreground" />
+<div className="bg-primary text-primary-foreground" />
+<div className="bg-muted text-muted-foreground" />
+<div className="border-border" />
+```
+
+Available: `background`, `foreground`, `card`, `popover`, `primary`, `secondary`, `muted`, `accent`, `destructive`, `border`, `input`, `ring`, `sidebar-*`, `chart-1`–`chart-5`.
+
+## cn() Utility
+
+Use `cn()` from `@/lib/utils` when classes are conditional or span multiple categories. Single-category classes use plain `className`.
+
+## Class Organization Order
+
+When using `cn()`, one string per category:
+
+1. Root/Group — `container`, `group`
+2. Overflow/Visibility — `overflow-*`, `opacity-*`
+3. Position + Z — `relative`, `absolute`, `z-*`
+4. Display + Box — `flex`, `grid`, `w-*`, `h-*`, `gap-*`, `p-*`, `m-*`, `border`, `rounded-*`
+5. Background + Type — `bg-*`, `text-*`, `font-*`
+6. Animation/Transition — `animate-*`, `transition-*`
+7. Interactivity — `cursor-*`, `pointer-events-*`
+8. Responsive — `sm:`, `md:`, `lg:`
+9. Dark — `dark:`
+
+```tsx
+<header className={cn(
+  'group',
+  'sticky top-0 z-50',
+  'flex w-full items-center justify-between h-16 px-6 border-b',
+  'bg-background/80 text-foreground backdrop-blur-sm',
+  'sm:px-8 lg:px-12',
+)} />
+```
+
+## Styling Rules
+
+- Tailwind utilities only — never inline `style` or `<style>` tags
+- Standard utilities over arbitrary values (`p-4` not `p-[17px]`)
+- `@apply` only for base resets in globals.css
+- `size-*` when width = height: `size-4` not `w-4 h-4`
+
+## Color Contrast (WCAG AAA)
+
+Normal text: **7:1**, large text: **4.5:1**, UI components: **3:1**. Never rely solely on color.
+
+## Responsive
+
+Mobile-first — base for mobile, breakpoints up:
+
+```tsx
+<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3" />
+```
+
+## Dark Mode
+
+Semantic tokens auto-swap. Use `dark:` only for edge cases where tokens are insufficient.

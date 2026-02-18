@@ -1,60 +1,136 @@
 ---
-description: "Next.js 16 patterns and best practices including Server Components, Server Actions, metadata, and performance optimizations"
+description: "Next.js patterns: Server/Client Components, Prop Helpers, async params, App Router, metadata, error boundaries, and performance"
 alwaysApply: true
-globs:
-  - "**/*.tsx"
-  - "**/*.ts"
-  - "**/app/**"
-  - "**/route.ts"
-  - "**/page.tsx"
-  - "**/layout.tsx"
 ---
 
-# Next.js 16 Patterns
+# Next.js Patterns
+
+## Prop Helpers
+
+Use auto-generated `PageProps` and `LayoutProps` — never manually type page/layout props:
+
+```tsx
+export default function Page(_: PageProps<'/'>) {
+  return <div>Home</div>;
+}
+
+function RootLayout({ children }: LayoutProps<'/'>) {
+  return <html>{children}</html>;
+}
+export default RootLayout;
+```
+
+## Async Params (Next.js 15+)
+
+`params` and `searchParams` are **Promises** — always `await` them. `children` is not a Promise.
+
+```tsx
+export default async function Page({ params }: PageProps<'/blog/[slug]'>) {
+  const { slug } = await params;
+  return <article>{slug}</article>;
+}
+
+export default async function Page({ searchParams }: PageProps<'/products'>) {
+  const { page, sort } = await searchParams;
+  return <ProductList page={page} sort={sort} />;
+}
+
+export async function generateMetadata({ params }: PageProps<'/blog/[slug]'>): Promise<Metadata> {
+  const { slug } = await params;
+  return { title: `Blog - ${slug}` };
+}
+```
+
+Pages/layouts without dynamic segments don't need `async`.
+
+## Default Exports — App Router Exception
+
+App Router requires default exports for `page.tsx`, `layout.tsx`, `error.tsx`, `loading.tsx`, `not-found.tsx`. This is the **only** exception to named-exports-only.
 
 ## Server vs Client Components
 
-- **Default to Server Components** - Use `"use client"` sparingly
-- **Client Components only when needed:**
-  - Interactivity (onClick, onChange, etc.)
-  - React hooks (useState, useEffect, etc.)
-  - Browser APIs (localStorage, window, etc.)
-  - Context providers that need client-side state
+Default to Server Components. Add `'use client'` only for:
+- Event handlers, React hooks, Browser APIs, client libraries (motion/react, react-hook-form)
 
-## Server Actions
+Push `'use client'` as deep as possible — wrap only the interactive leaf:
 
-- Use Server Actions for mutations when appropriate
-- Leverage Server Components for data fetching
-- Implement proper error handling in Server Actions
+```tsx
+function ProductPage({ product }: ProductPageProps) {
+  return (
+    <article>
+      <h1>{product.name}</h1>
+      <AddToCartButton productId={product.id} />
+    </article>
+  );
+}
+```
 
-## Metadata and Viewport
+## App Router Files
 
-- Use `generateMetadata` for dynamic metadata
-- Implement proper metadata and viewport configs
-- Use `next/third-parties` for third-party scripts
+| File | Purpose |
+|------|---------|
+| `page.tsx` | Route entry (Server Component) |
+| `layout.tsx` | Persistent layout (Server Component) |
+| `loading.tsx` | Suspense fallback |
+| `error.tsx` | Error boundary (`'use client'` required) |
+| `not-found.tsx` | 404 UI |
+| `route.ts` | API handler |
+| `template.tsx` | Re-mounting layout |
 
-## Route Handlers
+## Metadata
 
-- Support both Next.js Route Handlers and external APIs
-- Use proper error handling with try-catch blocks
-- Use Zod for API response validation
+```tsx
+// Static
+export const metadata: Metadata = { title: 'Home', description: '...' };
 
-## Performance Optimizations
+// Dynamic — use async + await params
+export async function generateMetadata({ params }: PageProps<'/blog/[slug]'>): Promise<Metadata> {
+  const { slug } = await params;
+  return { title: `Blog - ${slug}` };
+}
+```
 
-- Use Next.js `Image` component with proper sizing and optimization
-- Implement code splitting with dynamic imports (`next/dynamic`)
-- Leverage Server Components for data fetching to reduce client bundle size
-- Use `next/font` for font optimization (Geist fonts already configured)
-- Use `Suspense` boundaries for async components
+## Error Boundaries
+
+Every meaningful route segment should have an `error.tsx`. Log with `@/lib/logger`, never expose raw errors:
+
+```tsx
+'use client';
+
+import { useEffect } from 'react';
+
+import { logger } from '@/lib/logger';
+
+interface ErrorPageProps {
+  error: Error;
+  reset: () => void;
+}
+
+export default function Error({ error, reset }: ErrorPageProps) {
+  useEffect(() => {
+    logger.error({ context: 'error-boundary' }, error.message);
+  }, [error]);
+
+  return (
+    <div role="alert">
+      <h2>Something went wrong</h2>
+      <button onClick={reset}>Try again</button>
+    </div>
+  );
+}
+```
+
+## Loading States
+
+Use `loading.tsx` for routes, `<Suspense>` for components. Show skeleton UIs, never blank screens.
 
 ## Environment Variables
 
-- Use environment variables from `@/lib/env` (validated with Zod)
-- Never access `process.env` directly
-- Always validate environment variables with Zod schemas
+Access exclusively through `@/lib/env` (Zod-validated). Never `process.env` directly. Client vars prefixed `NEXT_PUBLIC_`.
 
-## Loading and Error Boundaries
+## Performance
 
-- Implement proper loading and error boundaries
-- Use Next.js error.tsx and loading.tsx files
-- Handle loading and error states in UI components
+- `next/Image` with `width`/`height` or `fill` — never `<img>`
+- `next/font` for fonts, `next/dynamic` for lazy-loading
+- `<Suspense>` for streaming, `@next/third-parties` for scripts
+- Minimize `'use client'` boundaries

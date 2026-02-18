@@ -1,42 +1,86 @@
 ---
-description: "React component patterns, composition, hooks usage, and component structure best practices"
-alwaysApply: false
-globs:
-  - "**/*.tsx"
-  - "**/components/**"
+description: "React component patterns: declarations, exports, props, composition, naming, and accessibility (WCAG AAA)"
+alwaysApply: true
 ---
 
-# React Component Patterns
+# React Components
 
-## Component Structure
+## Declaration
 
-- Keep components small and focused (single responsibility)
+Named exports + function declarations. Never default exports (except App Router files), never arrow function components:
+
+```tsx
+export function UserProfile({ user }: UserProfileProps) {
+  return <div>{user.name}</div>;
+}
+```
+
+## Props
+
+- Define with `interface`, destructure in signature, provide defaults inline
+- Callback props: `on` prefix (`onSelect`, `onChange`)
+- Internal handlers: `handle` prefix (`handleClick`, `handleSubmit`)
+- Booleans: `is`/`has`/`should` prefix (`isLoading`, `hasError`)
+
+```tsx
+interface DialogProps {
+  title: string;
+  isOpen?: boolean;
+  onClose: () => void;
+  children: ReactNode;
+}
+
+export function Dialog({ title, isOpen = false, onClose, children }: DialogProps) {
+  if (!isOpen) return null;
+  // ...
+}
+```
+
+## Early Returns
+
+Reduce nesting — return early for guard clauses:
+
+```tsx
+export function UserAvatar({ user, size = 'md' }: UserAvatarProps) {
+  if (!user) return null;
+  if (!user.avatarUrl) return <FallbackAvatar size={size} />;
+  return <Image src={user.avatarUrl} alt={user.name} />;
+}
+```
+
+## Composition
+
 - Prefer composition over prop drilling
-- Extract reusable logic into custom hooks in `@/hooks`
-- Use meaningful variable and function names
+- Use `children` and render props
+- Extend shadcn/ui via composition, never modify source
+- Reusable logic → `@/hooks`, domain types → `@/data/api/`
+- Component-specific types stay in the component file
 
-## Component Composition
+## Accessibility (WCAG 2.1 AAA)
 
-- Prefer composition over prop drilling
-- Use shadcn/ui components from `@/components/ui`
-- Extend components via composition rather than modification
+### Semantic HTML
+- `<button>` for actions, `<a>` for navigation — never `<div onClick>`
+- Semantic elements: `<nav>`, `<main>`, `<section>`, `<article>`
+- Proper heading hierarchy: `h1` → `h2` → `h3`, never skip
 
-## Hooks Usage
+### Keyboard
+- All interactive elements keyboard accessible (`Tab`, `Enter`, `Space`, `Escape`)
+- Trap focus in modals, return focus on close
 
-- Extract reusable logic into custom hooks
-- Use hooks appropriately (useState, useEffect, useMemo, etc.)
-- Memoize expensive computations with `useMemo`
-- Optimize re-renders with `React.memo` when needed
+### ARIA
+- `aria-label` on icon-only buttons
+- `aria-hidden="true"` on decorative icons
+- `aria-describedby` for supplementary descriptions
+- `aria-live` for dynamic updates
 
-## React 19 Features
+### Contrast
+- Normal text: 7:1 (AAA), large text: 4.5:1
+- Never rely solely on color
 
-- Use React 19 features when beneficial
-- Leverage React Compiler optimizations
-- Use async Server Components when appropriate
+### Example
 
-## Performance
-
-- Use `React.lazy()` for client components when appropriate
-- Memoize expensive computations with `useMemo`
-- Optimize re-renders with `React.memo` when needed
-- Use `Suspense` boundaries for async components
+```tsx
+<button aria-label="Close dialog" onClick={handleClose}>
+  <XIcon aria-hidden="true" />
+</button>
+```

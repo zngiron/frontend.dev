@@ -1,34 +1,165 @@
 ---
-description: "shadcn/ui component patterns, composition, and New York style conventions"
-alwaysApply: false
-globs:
-  - "**/components/ui/**"
-  - "**/components/**/*.tsx"
+description: "shadcn/ui: New York style, Field component forms with React Hook Form + Zod, Sonner toasts, and lucide icons"
+alwaysApply: true
 ---
 
-# shadcn/ui Patterns
+# shadcn/ui
 
-## Component Usage
+## Configuration
 
-- Use shadcn/ui components from `@/components/ui`
-- Follow shadcn/ui patterns and conventions
-- Use New York style components (as configured in `components.json`)
+Style: New York. Icons: lucide-react. Components: `@/components/ui/`. Add via `bunx shadcn@latest add [component]`.
 
-## Composition Patterns
+## Usage Rules
 
-- Extend shadcn/ui components via composition rather than modification
-- Prefer composition over prop drilling
-- Create wrapper components when needed for project-specific behavior
+- Import from `@/components/ui/[component]`
+- Never modify `@/components/ui/` files — customize via `className` + `cn()`
+- Use built-in variants, don't add custom variants to source files
 
-## Form Components
+## Composition
 
-- Use shadcn/ui form components when available
-- Use React Hook Form with Zod validation
-- Create reusable form components
-- Handle form errors appropriately with user-friendly messages
+Wrappers in `@/components/common/` that compose shadcn/ui:
 
-## Component Structure
+```tsx
+// @/components/common/button-submit.tsx
+interface ButtonSubmitProps extends ComponentProps<typeof Button> {
+  isLoading?: boolean;
+}
 
-- Keep components small and focused
-- Extract reusable logic into custom hooks
-- Use meaningful variable and function names
+export function ButtonSubmit({ isLoading = false, children, className, disabled, ...props }: ButtonSubmitProps) {
+  return (
+    <Button type="submit" disabled={isLoading || disabled} className={cn('min-w-[120px]', className)} {...props}>
+      {isLoading ? <Loader2 className="size-4 animate-spin" aria-hidden="true" /> : children}
+    </Button>
+  );
+}
+```
+
+## Forms — Field + Controller + Zod
+
+Use `Field` with React Hook Form `Controller` and Zod validation.
+
+### Field Components
+
+- `Field` — wrapper (supports `orientation="horizontal"` / `"responsive"`)
+- `FieldLabel` — label with `htmlFor`
+- `FieldDescription` — helper text
+- `FieldError` — validation errors (accepts `errors` array)
+- `FieldGroup` — stacks fields with spacing
+- `FieldSet` / `FieldLegend` — semantic grouping
+- `FieldContent` — label + description in horizontal layouts
+
+### Full Form Example
+
+```tsx
+'use client';
+
+import { Controller, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'sonner';
+import { z } from 'zod';
+
+import { Button } from '@/components/ui/button';
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+
+const loginSchema = z.object({
+  email: z.email('Enter a valid email address.'),
+  password: z.string().min(8, 'Password must be at least 8 characters.'),
+});
+
+type LoginFormValues = z.infer<typeof loginSchema>;
+
+export function FormLogin({ onSubmit }: { onSubmit: (values: LoginFormValues) => void }) {
+  const form = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: { email: '', password: '' },
+  });
+
+  return (
+    <form onSubmit={form.handleSubmit(onSubmit)}>
+      <FieldGroup>
+        <Controller
+          name="email"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Email</FieldLabel>
+              <Input {...field} id={field.name} type="email" placeholder="you@example.com" aria-invalid={fieldState.invalid} />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+        <Controller
+          name="password"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Password</FieldLabel>
+              <Input {...field} id={field.name} type="password" aria-invalid={fieldState.invalid} />
+              <FieldDescription>Must be at least 8 characters.</FieldDescription>
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+      </FieldGroup>
+      <Button type="submit">Sign In</Button>
+    </form>
+  );
+}
+```
+
+### Form Conventions
+
+- Zod schema above component, type via `z.infer<typeof schema>`
+- `zodResolver` for validation
+- `Controller` (not old `FormField`), `Field` (not old `Form`/`FormItem`)
+- `data-invalid={fieldState.invalid}` on `Field`, `aria-invalid` on input
+- `FieldError` only when `fieldState.invalid`
+- `defaultValues` for all fields, `field.name` as `id`/`htmlFor`
+
+### Select, Switch, Checkbox
+
+```tsx
+// Select
+<Select name={field.name} value={field.value} onValueChange={field.onChange}>
+  <SelectTrigger id={field.name} aria-invalid={fieldState.invalid}>
+    <SelectValue placeholder="Select" />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectItem value="en">English</SelectItem>
+  </SelectContent>
+</Select>
+
+// Switch — horizontal layout
+<Field orientation="horizontal">
+  <FieldContent>
+    <FieldLabel htmlFor={field.name}>Notifications</FieldLabel>
+    <FieldDescription>Receive push notifications.</FieldDescription>
+  </FieldContent>
+  <Switch id={field.name} checked={field.value} onCheckedChange={field.onChange} />
+</Field>
+```
+
+## Toasts — Sonner
+
+```tsx
+import { toast } from 'sonner';
+
+toast.success('Changes saved');
+toast.error('Failed to save', { description: 'File exceeds 5MB limit' });
+toast.promise(saveChanges(), { loading: 'Saving...', success: 'Saved', error: 'Failed' });
+```
+
+## Icons — Lucide
+
+```tsx
+import { Search, X } from 'lucide-react';
+
+<Search className="size-4" aria-hidden="true" />
+
+<Button variant="ghost" size="icon" aria-label="Search">
+  <Search className="size-4" />
+</Button>
+```
+
+Sizes: `size-3` (12px), `size-4` (16px), `size-5` (20px), `size-6` (24px).

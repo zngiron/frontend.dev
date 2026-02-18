@@ -1,58 +1,110 @@
 ---
-description: "Project-specific file organization, path aliases, and directory structure"
+description: "Project structure, naming conventions, path aliases, import order, and file organization"
 alwaysApply: true
-globs:
-  - "**/*"
 ---
 
 # Project Structure
 
-## Project Context
+## Tech Stack
 
-This is a Next.js 16.1.1 project using:
-- React 19 with React Compiler enabled
-- Tailwind CSS v4 (using `@import 'tailwindcss'`)
-- shadcn/ui components (New York style)
-- TypeScript with strict mode
-- Biome for linting/formatting
-- Path aliases: `@/*` → `./src/*`
+Next.js 16 (App Router), React 19 + React Compiler, TypeScript (strict), Tailwind CSS v4 (OKLCH), shadcn/ui (New York), Biome, Zustand, TanStack React Query, Zod, React Hook Form, motion/react, Sonner, date-fns, Pino, Playwright (future).
 
-## File Organization
+## Directory Tree
 
-### Components
+```
+src/
+├── app/                        # App Router (pages, layouts, loading, error)
+├── components/
+│   ├── common/                 # Shared reusable components
+│   ├── core/                   # Providers, scripts, error boundaries
+│   ├── layout/                 # Header, footer, sidebar, navigation
+│   └── ui/                     # shadcn/ui (never modify directly)
+├── data/
+│   ├── api/                    # API functions + domain types per domain
+│   └── stores/                 # Zustand stores per domain
+├── hooks/                      # Custom hooks + React Query hooks
+└── lib/                        # Utilities (client, env, logger, request, utils)
+tests/                          # Playwright tests (future)
+```
 
-`@/components/{common,core,layout,ui}`
-- `common/` - Shared/common components
-- `core/` - Core providers and scripts
-- `layout/` - Layout components (header, footer, etc.)
-- `ui/` - shadcn/ui components
+Route groups only when needed (shared layouts, auth grouping). Never a generic `(routes)/` wrapper.
 
-### Utilities
+## File Naming — Category-First Kebab-Case
 
-- `@/lib` - Helper functions and utilities
+Component type first, then variant — groups related files in the tree:
 
-### Hooks
+```
+components/common/
+├── button-icon.tsx
+├── button-submit.tsx
+├── card-product.tsx
+├── card-user.tsx
+├── dialog-confirm.tsx
+```
 
-- `@/hooks` - Custom React hooks
+Other files: `use-auth.ts`, `layout.store.ts`, `users.ts` (api), `format-date.ts` (lib).
 
-### Types
+## Symbol Naming
 
-- `@/types` - TypeScript type definitions
+| Symbol | Convention | Example |
+|--------|-----------|---------|
+| Components | PascalCase | `ButtonSubmit` |
+| Hooks | camelCase + `use` | `useAuth` |
+| Stores | camelCase + `use` + `Store` | `useLayoutStore` |
+| Interfaces/Types | PascalCase | `UserCardProps`, `Status` |
+| Constants | UPPER_SNAKE or camelCase | `MAX_RETRIES` |
+| Functions/vars | camelCase | `formatDate`, `isLoading` |
 
-### Stores
+## Types — Co-locate With Data
 
-- `@/data/stores` - Zustand stores
+No `@/types/` folder. Types live next to the code that owns them:
 
-### API Utilities
-
-- `@/data/api` - API-related utilities
+- Domain types (User, Product) → `@/data/api/[domain].ts`
+- Component props → in the component file
+- Store types → in the store file
 
 ## Path Aliases
 
-Use path aliases consistently:
-- `@/components` for components
-- `@/lib` for utilities
-- `@/hooks` for custom hooks
-- `@/types` for type definitions
-- `@/data/stores` for Zustand stores
-- `@/data/api` for API utilities
+Always `@/` aliases — never relative imports (`../`, `./`):
+
+`@/components/*`, `@/lib/*`, `@/hooks/*`, `@/data/api/*`, `@/data/stores/*`
+
+## Import Order (Biome-enforced)
+
+```tsx
+import type { Metadata } from 'next';
+import type { ReactNode } from 'react';
+import type { User } from '@/data/api/users';
+
+import { Suspense } from 'react';
+import Image from 'next/image';
+
+import { useQuery } from '@tanstack/react-query';
+
+import { Button } from '@/components/ui/button';
+
+import { cn } from '@/lib/utils';
+
+import { useUsers } from '@/hooks/use-users';
+import { useLayoutStore } from '@/data/stores/layout.store';
+```
+
+Groups: type imports → React/Next → packages → `@/components` → `@/lib` → `@/hooks` + `@/data`. Blank line between each group.
+
+**Never import React** — Next.js auto-imports it. Never use `React.XXX` — import types/hooks by name.
+
+## File Organization
+
+Single file per component, in order: type imports → dependency imports → local interfaces → constants → helpers → component export(s).
+
+## Where Things Live
+
+| Need | Location |
+|------|----------|
+| Page | `src/app/[route]/page.tsx` |
+| Shared component | `src/components/common/` (category-first) |
+| shadcn component | `src/components/ui/` (via `bunx shadcn@latest add`) |
+| API integration | `src/data/api/[domain].ts` + `src/hooks/use-[domain].ts` |
+| Global UI state | `src/data/stores/[domain].store.ts` |
+| Utility | `src/lib/[name].ts` |
+| Hook | `src/hooks/[name].ts` |

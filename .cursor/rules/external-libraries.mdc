@@ -1,0 +1,49 @@
+---
+description: "Approved libraries, dependency policies, and banned alternatives"
+alwaysApply: true
+---
+
+# External Libraries
+
+## Approved
+
+**Core:** next, react, react-dom, typescript
+**Styling:** tailwindcss, tw-animate-css, class-variance-authority, clsx, tailwind-merge
+**UI:** shadcn/ui, lucide-react
+**State/Data:** zustand, @tanstack/react-query, zod
+**Animation:** motion/react
+**Forms:** react-hook-form, @hookform/resolvers
+**Utilities:** sonner, date-fns, next-themes, qs, pino, @next/third-parties
+**Testing:** @playwright/test, @axe-core/playwright
+**Tooling:** @biomejs/biome, lefthook, @commitlint/cli
+
+## Adding Dependencies
+
+1. Check native APIs first (`Intl`, `URL`, `fetch`, `structuredClone`, `crypto.randomUUID()`)
+2. Check if an approved library covers it
+3. Evaluate bundle size (bundlephobia.com, prefer tree-shakeable)
+4. Verify maintenance and React 19 / Next.js 16 compatibility
+
+## Banned
+
+| Don't Use | Use Instead | Why |
+|-----------|-------------|-----|
+| moment.js | date-fns | Deprecated, massive bundle |
+| lodash (full) | Native or lodash-es | Most methods have native equivalents |
+| axios | `@/lib/request` | Unnecessary over fetch |
+| styled-components/emotion | Tailwind CSS | Utility-first approach |
+| Redux/MobX | Zustand + React Query | Less boilerplate |
+| jQuery | React APIs | Incompatible paradigm |
+| classnames | clsx + tailwind-merge | cn() handles this |
+| GSAP | motion/react | Licensing, motion covers all cases |
+| Lenis/smooth-scroll | motion/react `useScroll` | Breaks a11y |
+| framer-motion | motion/react | Old package name |
+
+## Imports
+
+Always specific — never `import *`:
+
+```tsx
+import { format, parseISO } from 'date-fns';
+import { Search, ChevronRight } from 'lucide-react';
+```
