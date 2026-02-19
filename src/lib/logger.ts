@@ -2,12 +2,14 @@ import pino from 'pino';
 
 const pinoLogger = pino({
   level: 'debug',
-  transport: {
-    target: 'pino-pretty',
-    options: {
-      colorize: true,
+  ...(process.env.NODE_ENV === 'development' && {
+    transport: {
+      target: 'pino-pretty',
+      options: {
+        colorize: true,
+      },
     },
-  },
+  }),
 });
 
 const formatError = (message: string): string => {

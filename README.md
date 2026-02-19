@@ -1,53 +1,43 @@
 # frontend.dev
 
-A modern Next.js application built with React 19, TypeScript, and Tailwind CSS v4.
+A modern Next.js starter template built with React 19, TypeScript, and Tailwind CSS v4.
 
-## 🚀 Tech Stack
+## Tech Stack
 
-- **Framework**: [Next.js 16.1.1](https://nextjs.org/) with App Router
-- **React**: 19.2.3 with React Compiler enabled
+- **Framework**: [Next.js 16](https://nextjs.org/) with App Router
+- **React**: 19 with React Compiler enabled
 - **TypeScript**: 5.x with strict mode
-- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
+- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/) (OKLCH color system)
 - **UI Components**: [shadcn/ui](https://ui.shadcn.com/) (New York style)
-- **State Management**: 
+- **State Management**:
   - [Zustand](https://zustand-demo.pmnd.rs/) for global UI state
   - [TanStack Query](https://tanstack.com/query) for server state
+- **Animation**: [motion/react](https://motion.dev/)
+- **Forms**: [React Hook Form](https://react-hook-form.com/) + [Zod](https://zod.dev/) (install on demand)
+- **Toasts**: [Sonner](https://sonner.emilkowal.dev/)
 - **Code Quality**: [Biome](https://biomejs.dev/) for linting and formatting
 - **Git Hooks**: [Lefthook](https://github.com/evilmartians/lefthook) with [Commitlint](https://commitlint.js.org/)
+- **Testing**: [Playwright](https://playwright.dev/) + [axe-core](https://github.com/dequelabs/axe-core) (install on demand)
 - **Package Manager**: [Bun](https://bun.sh/)
 
-## ✨ Features
-
-- ⚡ Server Components by default for optimal performance
-- 🎨 Modern UI with shadcn/ui components
-- 🌙 Theme support with `next-themes`
-- 📦 Optimized bundle size with code splitting
-- 🔒 Type-safe environment variables with Zod validation
-- 🧪 React Compiler for automatic optimizations
-- 🎯 Path aliases for clean imports (`@/components`, `@/lib`, etc.)
-
-## 📁 Project Structure
+## Project Structure
 
 ```
-frontend.dev/
-├── src/
-│   ├── app/              # Next.js App Router pages and layouts
-│   ├── components/       # React components
-│   │   ├── common/      # Shared/common components
-│   │   ├── core/        # Core providers and scripts
-│   │   ├── layout/      # Layout components (header, footer)
-│   │   └── ui/          # shadcn/ui components
-│   ├── data/
-│   │   ├── api/         # API utilities
-│   │   └── stores/      # Zustand stores
-│   ├── hooks/           # Custom React hooks
-│   ├── lib/             # Utility functions
-│   └── types/           # TypeScript type definitions
-├── public/              # Static assets
-└── ...config files
+src/
+├── app/              # Next.js App Router (pages, layouts, loading, error)
+├── components/
+│   ├── common/       # Shared reusable components
+│   ├── core/         # Providers, scripts, error boundaries
+│   ├── layout/       # Header, footer, sidebar, navigation
+│   └── ui/           # shadcn/ui (never modify directly)
+├── data/
+│   ├── api/          # API functions + domain types per domain
+│   └── stores/       # Zustand stores per domain
+├── hooks/            # Custom hooks + React Query hooks
+└── lib/              # Utilities (client, env, logger, request, utils)
 ```
 
-## 🛠️ Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -57,79 +47,56 @@ frontend.dev/
 ### Installation
 
 1. Clone the repository:
+
 ```bash
 git clone https://github.com/zngiron/frontend.dev.git
 cd frontend.dev
 ```
 
 2. Install dependencies:
+
 ```bash
 bun install
 ```
 
 3. Set up environment variables:
+
 ```bash
-# Copy .env.example to .env.local (if exists)
-# Configure your environment variables
+cp .env.example .env.local
 ```
 
 4. Run the development server:
+
 ```bash
 bun dev
 ```
 
 5. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## 📜 Available Scripts
+## Available Scripts
 
-- `bun dev` - Start the development server
-- `bun build` - Build the application for production
-- `bun start` - Start the production server
-- `bun lint` - Run Biome linter
-- `bun format` - Format code with Biome
+- `bun dev` — Start the development server
+- `bun build` — Build the application for production
+- `bun start` — Start the production server
+- `bun lint` — Run Biome linter
+- `bun format` — Format code with Biome
 
-## 🏗️ Development Guidelines
+## Development Guidelines
 
-### Server vs Client Components
+All coding conventions are defined in `.cursor/rules/` and enforced by the agent skills in `.cursor/skills/`. Key principles:
 
-- **Default to Server Components** - Use `"use client"` sparingly
-- **Client Components only when needed:**
-  - Interactivity (onClick, onChange, etc.)
-  - React hooks (useState, useEffect, etc.)
-  - Browser APIs (localStorage, window, etc.)
-  - Context providers that need client-side state
+- **Server Components by default** — add `'use client'` only for interactivity, hooks, or browser APIs
+- **Path aliases** — always use `@/` imports (`@/components`, `@/lib`, `@/hooks`, `@/data`)
+- **Environment variables** — access exclusively through `@/lib/env` (Zod-validated)
+- **Types co-located** — domain types in `@/data/api/`, component props in the component file
+- **Semantic tokens** — use Tailwind semantic colors (`bg-background`, `text-foreground`), never hardcoded values
+- **Accessibility** — target WCAG 2.1 AAA compliance
 
-### Path Aliases
+## Commit Messages
 
-Use path aliases consistently:
-- `@/components` for components
-- `@/lib` for utilities
-- `@/hooks` for custom hooks
-- `@/types` for type definitions
-- `@/data/stores` for Zustand stores
-- `@/data/api` for API utilities
+This project uses [Conventional Commits](https://www.conventionalcommits.org/) with Commitlint. Commit messages are automatically validated via Lefthook git hooks.
 
-### Environment Variables
-
-- Use environment variables from `@/lib/env` (validated with Zod)
-- Never access `process.env` directly
-- Always validate environment variables with Zod schemas
-
-### Code Style
-
-- Follow TypeScript strict mode guidelines
-- Use Biome for formatting and linting
-- Follow the project's component patterns (see `.cursor/rules/`)
-
-## 🧪 Testing
-
-Testing setup coming soon. The project is configured with Vitest (see `.cursor/rules/testing.mdc`).
-
-## 📝 Commit Messages
-
-This project uses [Conventional Commits](https://www.conventionalcommits.org/) with Commitlint. Commit messages are automatically validated via Lefthook.
-
-## 🚢 Deployment
+## Deployment
 
 The easiest way to deploy is using [Vercel](https://vercel.com):
 
@@ -137,14 +104,6 @@ The easiest way to deploy is using [Vercel](https://vercel.com):
 
 For more deployment options, see the [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying).
 
-## 📄 License
+## License
 
 This project is private and proprietary.
-
-## 🤝 Contributing
-
-This is a private project. Contributions are not currently accepted.
-
----
-
-Built with ❤️ using Next.js and React

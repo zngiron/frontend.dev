@@ -57,7 +57,8 @@ export const request = async <T = unknown>({ method, endpoint, params }: Request
       throw new Error(message);
     }
 
-    return response.json() as Promise<T>;
+    const data: T = await response.json();
+    return data;
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     const formattedMessage = logger.error({ endpoint, method }, message);
