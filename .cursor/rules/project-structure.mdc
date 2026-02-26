@@ -52,7 +52,7 @@ Other files: `use-auth.ts`, `layout.store.ts`, `users.ts` (api), `format-date.ts
 | Hooks | camelCase + `use` | `useAuth` |
 | Stores | camelCase + `use` + `Store` | `useLayoutStore` |
 | Interfaces/Types | PascalCase | `UserCardProps`, `Status` |
-| Constants | UPPER_SNAKE or camelCase | `MAX_RETRIES` |
+| Constants | PascalCase | `MaxRetries` |
 | Functions/vars | camelCase | `formatDate`, `isLoading` |
 
 ## Types — Co-locate With Data

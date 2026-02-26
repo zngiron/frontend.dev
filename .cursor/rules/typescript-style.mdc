@@ -33,8 +33,8 @@ type Result<T> = { data: T; error: null } | { data: null; error: Error };
 ## Enum Alternatives
 
 ```tsx
-const STATUS = { active: 'active', inactive: 'inactive', pending: 'pending' } as const;
-type Status = (typeof STATUS)[keyof typeof STATUS];
+const Status = { active: 'active', inactive: 'inactive', pending: 'pending' } as const;
+type Status = (typeof Status)[keyof typeof Status];
 
 type Variant = 'default' | 'destructive' | 'outline';
 ```
