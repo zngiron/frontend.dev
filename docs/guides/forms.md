@@ -1,20 +1,12 @@
-# Forms Setup Guide
+# Forms
 
-> **Purpose:** Step-by-step guide for adding React Hook Form with Zod validation to the project.
->
-> **Last Updated:** 2026-04-06
->
-> **Status:** Active
+React Hook Form with Zod validation.
 
 ---
 
-## Prerequisites
-
-Zod is already installed as a Tier 1 dependency — no action needed. React Hook Form is a Tier 2 dependency and must be installed before use.
-
 ## Dependencies
 
-Install React Hook Form and its Zod resolver:
+Zod is Tier 1 (pre-installed). Install React Hook Form:
 
 ```bash
 bun add react-hook-form @hookform/resolvers
@@ -22,35 +14,16 @@ bun add react-hook-form @hookform/resolvers
 
 ## File Structure
 
-Zod schemas live in a dedicated validators directory, one file per feature domain:
-
 ```
-src/lib/validators/
-├── auth.schema.ts
-└── [feature].schema.ts
+src/lib/validators/   → Zod schemas, one per domain (auth.schema.ts, etc.)
+src/components/forms/  → Shared form components (used in 2+ features)
 ```
 
-Form components live either in their feature directory (co-located with the page or module that uses them) or in `src/components/forms/` when they are shared across features.
+## Implementation
 
-## Step-By-Step Implementation
+### 1. Create A Zod Schema
 
-### 1. Install Dependencies
-
-Run the install command from the project root:
-
-```bash
-bun add react-hook-form @hookform/resolvers
-```
-
-### 2. Create The Validators Directory
-
-```bash
-mkdir -p src/lib/validators
-```
-
-### 3. Create A Zod Schema
-
-Define the schema and export a type inferred from it. Example for an authentication form:
+`src/lib/validators/auth.schema.ts`:
 
 ```ts
 import { z } from "zod"
@@ -63,9 +36,7 @@ export const LoginSchema = z.object({
 export type LoginValues = z.infer<typeof LoginSchema>
 ```
 
-### 4. Create A Form Component
-
-Mark the component as a Client Component, wire `useForm` to `zodResolver`, and render error messages beneath each field:
+### 2. Create A Form Component
 
 ```tsx
 "use client"
@@ -87,27 +58,19 @@ export function LoginForm() {
   })
 
   async function onSubmit(data: LoginValues) {
-    // Call Server Action or API
+    // Call Server Action
   }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
       <div>
-        <Input
-          type="email"
-          placeholder="Email"
-          {...register("email")}
-        />
+        <Input type="email" placeholder="Email" {...register("email")} />
         {errors.email && (
           <p className="mt-1 text-sm text-destructive">{errors.email.message}</p>
         )}
       </div>
       <div>
-        <Input
-          type="password"
-          placeholder="Password"
-          {...register("password")}
-        />
+        <Input type="password" placeholder="Password" {...register("password")} />
         {errors.password && (
           <p className="mt-1 text-sm text-destructive">{errors.password.message}</p>
         )}
@@ -120,15 +83,11 @@ export function LoginForm() {
 }
 ```
 
-## Environment Variables
-
-None required for React Hook Form or Zod validation.
-
 ## Common Patterns
 
-### Server Action Integration
+### Server Action Validation
 
-Validate form data inside a Server Action using `safeParse`. This provides a second layer of validation independent of the client:
+Double-validate with `safeParse` inside the action:
 
 ```ts
 "use server"
@@ -137,38 +96,27 @@ import { LoginSchema } from "@/lib/validators/auth.schema"
 
 export async function loginAction(data: FormData) {
   const parsed = LoginSchema.safeParse(Object.fromEntries(data))
-  if (!parsed.success) {
-    return { error: "Invalid input" }
-  }
+  if (!parsed.success) return { error: "Invalid input" }
   // Authenticate user
 }
 ```
 
-Pass the action to the form component and call it inside `onSubmit` after client-side validation has already passed.
-
 ### Multi-Step Forms
 
-Split the schema into partial objects using `z.object` for each step. Use local state or a context to track the current step index and accumulate validated data. Only submit to the server once all steps pass.
+Split schema into partial `z.object` per step. Track step index in local state. Submit to server only after all steps pass.
 
 ### Field Arrays
 
-Use `useFieldArray` from React Hook Form when the form contains a dynamic list of identical fields (e.g., a list of contacts or line items). It provides `fields`, `append`, and `remove` helpers that integrate with the registered form state.
-
 ```ts
-const { fields, append, remove } = useFieldArray({
-  control,
-  name: "items",
-})
+const { fields, append, remove } = useFieldArray({ control, name: "items" })
 ```
 
 ### Conditional Validation
 
-Use `z.discriminatedUnion` or `.superRefine` to express fields that are required only when another field has a specific value. Keep conditional logic inside the schema rather than in the component to ensure server-side validation stays consistent.
+Use `z.discriminatedUnion` or `.superRefine`. Keep logic in the schema, not the component.
 
 ## Verification
 
-1. Render the form in the browser.
-2. Submit the form without filling in any fields.
-3. Confirm that validation error messages appear beneath the email and password inputs.
-4. Enter an invalid email format and a password shorter than 8 characters, then submit again. Confirm the specific error messages display correctly.
-5. Fill in valid data and submit. Confirm the `onSubmit` handler is called with the parsed values and no errors are shown.
+1. Submit empty form → validation errors appear
+2. Invalid email + short password → specific error messages
+3. Valid data → `onSubmit` called with parsed values, no errors
