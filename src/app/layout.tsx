@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 
 import { Providers } from '@/components/core/providers';
+import { StructuredData } from '@/components/core/structured-data';
 import { Footer } from '@/components/layout/footer';
 import { Header } from '@/components/layout/header';
 import { SITE } from '@/lib/constants';
@@ -80,7 +81,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
       suppressHydrationWarning
       className={cn(sans.className, mono.className)}
     >
-      <body className={cn('flex flex-col', 'min-h-dvh', 'antialiased')}>
+      <body className="flex flex-col min-h-dvh antialiased">
         <Providers>
           <Header />
           <main
@@ -91,6 +92,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
           </main>
           <Footer />
         </Providers>
+        <StructuredData />
       </body>
     </html>
   );

@@ -6,12 +6,5 @@ pre-commit:
 
 commit-msg:
   commands:
-    validate:
-      run: |
-        msg=$(cat {1})
-        if ! echo "$msg" | grep -qE '^(feat|fix|refactor|docs|test|chore): .+$'; then
-          echo "Invalid commit message format."
-          echo "Expected: <type>: <description>"
-          echo "Types: feat, fix, refactor, docs, test, chore"
-          exit 1
-        fi
+    commitlint:
+      run: bunx commitlint --edit {1}

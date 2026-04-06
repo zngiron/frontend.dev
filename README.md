@@ -1,79 +1,74 @@
 # Front-End Development Framework
 
-AI-guarded front-end development framework built on Next.js 16, Tailwind CSS 4, and TypeScript.
+AI-guarded front-end framework. Next.js 16, Tailwind CSS 4, TypeScript.
 
 ---
 
 ## Quick Start
 
 ```bash
-# 1. Clone the repository
-git clone <repo-url> && cd frontend.dev
-
-# 2. Install dependencies and configure environment
-bun setup
-
-# 3. Start the development server
-bun dev
+bun setup && bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open [http://localhost:3000](http://localhost:3000).
 
 ---
 
 ## Stack
 
-| Technology    | Purpose                        |
-| ------------- | ------------------------------ |
-| Next.js 16    | App framework (App Router)     |
-| TypeScript    | Type safety                    |
-| Tailwind CSS 4| Utility-first styling          |
-| Biome         | Linting and formatting         |
-| shadcn/ui     | Accessible UI components       |
-| Zod           | Schema validation              |
-| Sonner        | Toast notifications            |
+| Technology | Purpose |
+|---|---|
+| Next.js 16 | App Router framework |
+| TypeScript | Strict type safety |
+| Tailwind CSS 4 | Utility-first styling |
+| Biome | Linting + formatting |
+| shadcn/ui | UI primitives |
+| Zod | Schema validation |
+| Sonner | Toast notifications |
+| Bun | Package manager + runtime |
+| Lefthook | Git hooks |
+| Vitest + Playwright | Testing |
 
 ---
 
-## Project Structure
+## Structure
 
 ```
-.
-├── src/          # Application source code
-├── docs/         # Architecture, conventions, and design docs
-├── tests/        # Unit and integration tests
-└── scripts/      # Developer automation scripts
+src/       → Application source
+docs/      → Architecture, conventions, design, decisions, guides
+tests/     → Unit, integration, e2e
+scripts/   → Developer automation
 ```
 
 ---
 
-## Documentation
+## Docs
 
-| Document                     | Description                          |
-| ---------------------------- | ------------------------------------ |
-| `docs/ARCHITECTURE.md`       | System design and layer boundaries   |
-| `docs/CONVENTIONS.md`        | Coding standards and naming rules    |
-| `docs/DECISIONS.md`          | Architectural decision records       |
-| `docs/DESIGN.md`             | UI/UX guidelines and design tokens   |
+| Document | Content |
+|---|---|
+| `docs/ARCHITECTURE.md` | System design, folder structure, layer boundaries |
+| `docs/CONVENTIONS.md` | Naming, imports, coding patterns |
+| `docs/DECISIONS.md` | Architecture decision records |
+| `docs/DESIGN.md` | Brand, tokens, component theming |
 
-11 topic-specific guides are available in `docs/guides/`.
+11 guides in `docs/guides/`.
 
 ---
 
 ## Scripts
 
-| Command          | Description                              |
-| ---------------- | ---------------------------------------- |
-| `bun dev`        | Start the development server             |
-| `bun build`      | Build for production                     |
-| `bun start`      | Start the production server              |
-| `bun lint`       | Run Biome linter                         |
-| `bun format`     | Format source files with Biome           |
-| `bun typecheck`  | Run TypeScript type checking             |
-| `bun test`       | Run unit and integration tests           |
-| `bun test:watch` | Run tests in watch mode                  |
-| `bun test:e2e`   | Run end-to-end tests                     |
-| `bun setup`      | Install dependencies and configure env   |
+| Command | Action |
+|---|---|
+| `bun dev` | Dev server |
+| `bun build` | Production build |
+| `bun start` | Production server |
+| `bun lint` | Biome linter |
+| `bun format` | Biome formatter |
+| `bun typecheck` | TypeScript check |
+| `bun test` | Unit + integration tests |
+| `bun test:watch` | Tests (watch mode) |
+| `bun test:e2e` | Playwright e2e |
+| `bun setup` | Install + configure env |
 
 ---
 

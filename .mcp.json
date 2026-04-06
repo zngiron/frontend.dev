@@ -2,11 +2,7 @@
   "mcpServers": {
     "shadcn": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@anthropic-ai/claude-code-mcp",
-        "https://ui.shadcn.com/api/mcp"
-      ]
+      "args": ["shadcn@latest", "mcp"]
     }
   }
 }

@@ -134,7 +134,7 @@ e2e-test:
   name: E2E Test
   runs-on: ubuntu-latest
   steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - uses: oven-sh/setup-bun@v2
     - run: bun install --frozen-lockfile
     - run: bunx playwright install --with-deps chromium

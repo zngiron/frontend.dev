@@ -112,8 +112,6 @@ Update only `--radius` in `globals.css` to change global roundness.
 
 ## Logo And Assets
 
-Convention: `public/static/{namespace}-{element}-{l/d}.{ext}`
-
 | File | Description | Replace With |
 |---|---|---|
 | `frontend-dev-logo.svg` | Full lockup, mode-neutral | `[define]` |
