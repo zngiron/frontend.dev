@@ -1,53 +1,17 @@
 # This is NOT the Next.js you know
 
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
+This version has breaking changes. Check `docs/FRAMEWORK.md` for version truths and breaking changes before writing any code. Check `node_modules/next/dist/docs/` when unsure about any Next.js API.
 
 ---
 
-## Next.js 16 Breaking Changes
+## References
 
-### Type Helpers
-
-Next.js 16 provides generated route-typed props. Use them instead of manual types:
-
-```ts
-export default function Page(_: PageProps<'/'>) { ... }
-export default function Layout({ children }: LayoutProps<'/'>) { ... }
-```
-
-These are auto-generated from the route tree. Do not define custom `PageProps` or `LayoutProps` types.
-
-### Proxy Replaces Middleware
-
-`middleware.ts` is replaced by `proxy.ts`. Export `proxy`, not `middleware`:
-
-```ts
-// src/proxy.ts
-export async function proxy(request: NextRequest) { ... }
-export const config = { matcher: [...] }
-```
-
-### Error Boundary
-
-`reset` is replaced by `unstable_retry` in `error.tsx`:
-
-```ts
-export default function ErrorPage({
-  error,
-  unstable_retry,
-}: {
-  error: Error & { digest?: string }
-  unstable_retry: () => void
-}) { ... }
-```
-
-### React Compiler
-
-Enabled by default (`reactCompiler: true` in `next.config.ts`). No need for manual `useMemo`/`useCallback` optimization. The compiler handles memoization automatically.
-
-### General Rule
-
-When unsure about any Next.js API, check `node_modules/next/dist/docs/` first. Your training data may be outdated.
+- Framework versions and breaking changes: `docs/FRAMEWORK.md`
+- Architecture and file structure: `docs/ARCHITECTURE.md`
+- Coding conventions: `docs/CONVENTIONS.md`
+- Design and shadcn gate: `docs/DESIGN.md`
+- Styling and class ordering: `docs/STYLING.md`
+- AI restrictions: `docs/AI-RESTRICTIONS.md`
 
 ---
 

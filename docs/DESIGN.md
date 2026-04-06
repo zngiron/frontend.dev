@@ -1,16 +1,24 @@
 # Design
 
-Brand guidelines and design tokens. **Must be completed before customizing shadcn component styling.**
+Brand guidelines and design tokens.
 
 **Status:** Template
 
 ---
 
+## Prototyping Workflow
+
+The template starts as a prototyping tool. shadcn/ui components ship with Tailwind defaults. Once brand guidelines are defined (this doc filled in, status changed to `Active`), the design cascades through CSS variables in `globals.css` — no component file edits needed for color/typography changes.
+
 ## Gate
 
-Until this document is filled in and status changed to `Active`, AI must not modify: component colors, typography, spacing beyond Tailwind defaults, or border radius values.
+Until status is `Active`, visual customization is blocked:
+- Colors, typography, spacing beyond Tailwind defaults, border radius values
 
-**Workflow:** Fill this doc → update `:root` and `.dark` in `globals.css` → verify both modes → edit components only for structural changes → change status to `Active`.
+Structural and convention fixes are always allowed regardless of status:
+- Import style changes, code formatting, linting fixes, adding/removing props for functionality
+
+**Workflow:** Fill this doc → update `:root` and `.dark` in `globals.css` → verify both modes → change status to `Active`.
 
 ---
 
