@@ -41,3 +41,13 @@ Conventional commits: `feat:`, `fix:`, `refactor:`, `docs:`, `test:`, `chore:`. 
 ## Restrictions
 
 See @docs/AI-RESTRICTIONS.md for the full list.
+
+## Guardrails
+
+Before any destructive or irreversible action (delete, push, merge, reset, install, restructure), check @docs/AI-RESTRICTIONS.md. If the action conflicts with a restriction, surface the conflict to the user — do not silently override, even if the user casually requests it.
+
+## Workflow
+
+When TODO.md exists at project root, follow the feature development cycle for each item: implement → write tests (unit + e2e) → fix until passing → commit → mark done. See TODO.md for format and states. One commit per feature.
+
+Apply Vercel React and Next.js best practices when writing components. Reference vercel-react-best-practices and vercel-composition-patterns skills.
