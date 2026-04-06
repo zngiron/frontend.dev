@@ -24,6 +24,7 @@ interface Integration {
   value: string;
   label: string;
   deps: string[];
+  devDeps: string[];
   dirs: string[];
   envVars: string[];
 }
@@ -33,6 +34,7 @@ const integrations: Integration[] = [
     value: 'auth',
     label: 'Auth — Supabase',
     deps: ['@supabase/ssr', '@supabase/supabase-js'],
+    devDeps: [],
     dirs: ['lib/supabase'],
     envVars: [
       '',
@@ -46,6 +48,7 @@ const integrations: Integration[] = [
     value: 'state',
     label: 'State Management — Zustand',
     deps: ['zustand'],
+    devDeps: [],
     dirs: ['stores'],
     envVars: [],
   },
@@ -53,6 +56,7 @@ const integrations: Integration[] = [
     value: 'forms',
     label: 'Forms — React Hook Form',
     deps: ['react-hook-form', '@hookform/resolvers'],
+    devDeps: [],
     dirs: ['lib/validators', 'components/forms'],
     envVars: [],
   },
@@ -60,6 +64,7 @@ const integrations: Integration[] = [
     value: 'payments-stripe',
     label: 'Payments — Stripe',
     deps: ['stripe'],
+    devDeps: [],
     dirs: ['lib/payments'],
     envVars: [
       '',
@@ -73,6 +78,7 @@ const integrations: Integration[] = [
     value: 'payments-paymongo',
     label: 'Payments — PayMongo',
     deps: ['paymongo-node'],
+    devDeps: [],
     dirs: ['lib/payments'],
     envVars: [
       '',
@@ -86,6 +92,7 @@ const integrations: Integration[] = [
     value: 'email',
     label: 'Email — Resend',
     deps: ['resend'],
+    devDeps: [],
     dirs: ['lib/email'],
     envVars: ['', '# Email (Resend)', 'RESEND_API_KEY=', 'RESEND_FROM_EMAIL='],
   },
@@ -93,6 +100,7 @@ const integrations: Integration[] = [
     value: 'analytics-vercel',
     label: 'Analytics — Vercel Analytics',
     deps: ['@vercel/analytics'],
+    devDeps: [],
     dirs: [],
     envVars: [],
   },
@@ -100,6 +108,7 @@ const integrations: Integration[] = [
     value: 'analytics-ga',
     label: 'Analytics — Google Analytics',
     deps: ['@next/third-parties'],
+    devDeps: [],
     dirs: [],
     envVars: ['', '# Analytics (GA4)', 'NEXT_PUBLIC_ANALYTICS_ID='],
   },
@@ -107,6 +116,7 @@ const integrations: Integration[] = [
     value: 'sentry',
     label: 'Error Monitoring — Sentry',
     deps: ['@sentry/nextjs'],
+    devDeps: [],
     dirs: [],
     envVars: [
       '',
@@ -116,6 +126,19 @@ const integrations: Integration[] = [
       'SENTRY_ORG=',
       'SENTRY_PROJECT=',
     ],
+  },
+  {
+    value: 'graphql',
+    label: 'GraphQL — graphql-request + Codegen',
+    deps: ['graphql', 'graphql-request', 'graphql-tag'],
+    devDeps: [
+      '@graphql-codegen/cli',
+      '@graphql-codegen/typescript',
+      '@graphql-codegen/typescript-operations',
+      '@graphql-codegen/typescript-graphql-request',
+    ],
+    dirs: ['lib/graphql', 'data/graphql'],
+    envVars: ['', '# GraphQL', 'API_URL='],
   },
 ];
 
@@ -148,6 +171,14 @@ async function main() {
     s.start(`Installing ${allDeps.length} dependencies...`);
     execSync(`bun add ${allDeps.join(' ')}`, { stdio: 'pipe' });
     s.stop(`Installed ${allDeps.length} dependencies.`);
+  }
+
+  // Install dev dependencies
+  const allDevDeps = chosen.flatMap((i) => i.devDeps);
+  if (allDevDeps.length > 0) {
+    s.start(`Installing ${allDevDeps.length} dev dependencies...`);
+    execSync(`bun add -d ${allDevDeps.join(' ')}`, { stdio: 'pipe' });
+    s.stop(`Installed ${allDevDeps.length} dev dependencies.`);
   }
 
   // Create directories

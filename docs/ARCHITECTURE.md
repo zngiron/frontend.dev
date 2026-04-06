@@ -20,6 +20,7 @@ src/
 │   ├── robots.txt, globals.css
 ├── data/
 │   ├── api/                → Fetch functions + domain types (one file per domain)
+│   ├── graphql/            → .graphql operation files + __generated__/ codegen output
 │   └── static/             → Hard-coded app data (navigation, pricing, features)
 ├── components/
 │   ├── core/               → Providers, app-wide wrappers
@@ -28,6 +29,7 @@ src/
 │   ├── layout/             → Header, sidebar, footer, nav
 │   └── [feature]/          → Feature-scoped (2+ components)
 ├── lib/
+│   ├── graphql/            → GraphQL client (server-only)
 │   ├── supabase/           → client, server, middleware, admin
 │   ├── payments/           → stripe, paymongo
 │   ├── email/              → resend
@@ -55,6 +57,8 @@ public/static/              → Static assets
 | `lib/supabase/` | All Supabase clients. No direct instantiation elsewhere. |
 | `lib/validators/` | Zod schemas shared across actions, routes, forms. |
 | `lib/types.ts` | Shared utility types only (e.g. `ActionResult`). Domain types live in `data/api/`. |
+| `data/graphql/` | `.graphql` operation files, one per domain. `__generated__/` contains codegen output (committed). |
+| `lib/graphql/` | GraphQL client singleton. Server-only. No direct instantiation elsewhere. |
 
 Single feature-specific components live in `components/` until a second related component warrants a directory.
 

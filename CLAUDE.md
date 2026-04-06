@@ -31,6 +31,7 @@ Next.js 16.2, React 19, TypeScript (strict), Tailwind CSS 4, Biome, Bun, shadcn/
 | Analytics (GA4) | No extra dep | @docs/integrations/analytics-ga.md |
 | Error Monitoring | `bun add @sentry/nextjs` | @docs/integrations/sentry.md |
 | Testing | Already configured | @docs/integrations/testing.md |
+| GraphQL | `bun add graphql graphql-request graphql-tag` | @docs/integrations/graphql.md |
 
 Or run `bun run setup` for interactive Tier 2 scaffolding.
 
