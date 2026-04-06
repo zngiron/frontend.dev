@@ -1,6 +1,6 @@
-# Analytics — Google Analytics 4
+# Analytics — Google Analytics
 
-**Stack:** Google Analytics 4 (via `next/script`)
+**Stack:** Google Analytics (via `@next/third-parties`)
 
 ---
 
@@ -12,7 +12,9 @@ Can run simultaneously with Vercel Analytics.
 
 ## Dependencies
 
-None. Loaded via `next/script` — no npm package needed.
+```bash
+bun add @next/third-parties
+```
 
 ## Env Variables
 
@@ -29,22 +31,20 @@ src/components/core/
 └── analytics-provider.tsx → Client component, renders in production only (shared with Vercel Analytics)
 
 src/lib/
-└── analytics.ts → Custom event tracking utility (gtag wrapper, no-ops when unavailable)
-
-src/types/
-└── gtag.d.ts → Window.gtag type declaration
+└── analytics.ts → Custom event tracking utility (sendGAEvent wrapper, no-ops when unavailable)
 ```
 
 ## Conventions
 
-- GA4 script loaded via `next/script` with `strategy="afterInteractive"`.
-- Production-only: check `process.env.NODE_ENV === 'production'` before rendering scripts.
-- Custom events: use a `trackEvent` utility that no-ops when `gtag` is unavailable.
+- Use `<GoogleAnalytics gaId={id} />` from `@next/third-parties/google` in root layout or analytics provider.
+- Production-only: check `process.env.NODE_ENV === 'production'` before rendering.
+- Custom events: use `sendGAEvent` from `@next/third-parties/google`. Wrap in a `trackEvent` utility that no-ops when the analytics ID is unavailable.
+- No manual `gtag.d.ts` needed — types are provided by the package.
 
 ## References
 
+- @next/third-parties Google Analytics: https://nextjs.org/docs/app/building-your-application/optimizing/third-party-libraries#google-analytics
 - GA4 setup: https://developers.google.com/analytics/devguides/collection/ga4
-- next/script: https://nextjs.org/docs/app/api-reference/components/script
 
 ## Verification
 

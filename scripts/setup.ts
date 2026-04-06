@@ -31,7 +31,7 @@ interface Integration {
 const integrations: Integration[] = [
   {
     value: 'auth',
-    label: 'Auth (Supabase Auth + @supabase/ssr)',
+    label: 'Auth — Supabase',
     deps: ['@supabase/ssr', '@supabase/supabase-js'],
     dirs: ['lib/supabase'],
     envVars: [
@@ -43,23 +43,23 @@ const integrations: Integration[] = [
     ],
   },
   {
-    value: 'forms',
-    label: 'Forms (React Hook Form + @hookform/resolvers)',
-    deps: ['react-hook-form', '@hookform/resolvers'],
-    dirs: ['lib/validators', 'components/forms'],
-    envVars: [],
-  },
-  {
     value: 'state',
-    label: 'State Management (Zustand)',
+    label: 'State Management — Zustand',
     deps: ['zustand'],
     dirs: ['stores'],
     envVars: [],
   },
   {
-    value: 'payments',
-    label: 'Payments (Stripe + PayMongo)',
-    deps: ['stripe', 'paymongo-node'],
+    value: 'forms',
+    label: 'Forms — React Hook Form',
+    deps: ['react-hook-form', '@hookform/resolvers'],
+    dirs: ['lib/validators', 'components/forms'],
+    envVars: [],
+  },
+  {
+    value: 'payments-stripe',
+    label: 'Payments — Stripe',
+    deps: ['stripe'],
     dirs: ['lib/payments'],
     envVars: [
       '',
@@ -67,6 +67,14 @@ const integrations: Integration[] = [
       'STRIPE_SECRET_KEY=',
       'STRIPE_WEBHOOK_SECRET=',
       'NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=',
+    ],
+  },
+  {
+    value: 'payments-paymongo',
+    label: 'Payments — PayMongo',
+    deps: ['paymongo-node'],
+    dirs: ['lib/payments'],
+    envVars: [
       '',
       '# Payments — PayMongo',
       'PAYMONGO_SECRET_KEY=',
@@ -76,21 +84,28 @@ const integrations: Integration[] = [
   },
   {
     value: 'email',
-    label: 'Email (Resend)',
+    label: 'Email — Resend',
     deps: ['resend'],
     dirs: ['lib/email'],
     envVars: ['', '# Email (Resend)', 'RESEND_API_KEY=', 'RESEND_FROM_EMAIL='],
   },
   {
-    value: 'analytics',
-    label: 'Analytics (Vercel Analytics)',
+    value: 'analytics-vercel',
+    label: 'Analytics — Vercel Analytics',
     deps: ['@vercel/analytics'],
     dirs: [],
-    envVars: ['', '# Analytics', 'NEXT_PUBLIC_ANALYTICS_ID='],
+    envVars: [],
+  },
+  {
+    value: 'analytics-ga',
+    label: 'Analytics — Google Analytics',
+    deps: ['@next/third-parties'],
+    dirs: [],
+    envVars: ['', '# Analytics (GA4)', 'NEXT_PUBLIC_ANALYTICS_ID='],
   },
   {
     value: 'sentry',
-    label: 'Error Monitoring (Sentry)',
+    label: 'Error Monitoring — Sentry',
     deps: ['@sentry/nextjs'],
     dirs: [],
     envVars: [
