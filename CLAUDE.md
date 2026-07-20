@@ -61,7 +61,7 @@ src/
     └── motion.ts              → Duration/easing constants (with first animation)
 
 public/
-└── static/                    → Brand assets, {namespace}-{element}-{l/d}.ext
+└── static/                    → Brand assets, {namespace}-{element}-{light|dark}.ext
 ```
 
 - Server Components by default. `'use client'` only when interactivity can't be isolated to a child.
@@ -80,10 +80,13 @@ public/
 - Import groups (type → package → `@/` alias, blank line between) are enforced by Biome — don't fight the organizer.
 - Self-documenting code. No comments in authored `src/` code.
 - Blank line before `return`. Constants over magic values.
+- Env vars: declare in `.env.example`, read once in `lib/constants.ts` — never `process.env` inline in components or routes.
+- Remote images: allowlist exact hostnames in `next.config.ts` `images.remotePatterns`, per project. Never wildcards; the template ships with none.
 
 ## Workflow
 
-- Loop: implement → `bun run lint` + `bun run typecheck` pass → commit.
+- Loop: implement → `bun run lint` + `bun run typecheck` (+ `bun run test` once present) pass → commit.
+- Testing (on demand, approval-gated): Vitest + Testing Library, added at the first logic worth testing. Implement fully first, then test — tests gate the commit, never the implementation.
 - Conventional commits: `feat:`, `fix:`, `refactor:`, `docs:`, `chore:`. One line. No co-author trailers.
 - Lefthook runs Biome on staged files at every commit.
 - Research, studies, data exploration, and all note-taking go to Obsidian when available (skip silently when not) — never committed to this repo.

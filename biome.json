@@ -1,9 +1,8 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.5.2/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.5.4/schema.json",
   "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
   "files": {
-    "ignoreUnknown": true,
-    "includes": ["**", "!node_modules", "!.next", "!dist", "!build"]
+    "ignoreUnknown": true
   },
   "overrides": [
     {
@@ -15,12 +14,19 @@
       }
     }
   ],
-  "formatter": { "enabled": true, "indentStyle": "space", "indentWidth": 2 },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 120
+  },
   "css": {
     "formatter": { "quoteStyle": "single" },
     "parser": { "tailwindDirectives": true }
   },
-  "javascript": { "formatter": { "quoteStyle": "single" } },
+  "javascript": {
+    "formatter": { "quoteStyle": "single", "expand": "always" }
+  },
   "linter": {
     "enabled": true,
     "rules": {
@@ -30,8 +36,7 @@
           "level": "error",
           "options": { "style": "separatedType" }
         }
-      },
-      "suspicious": { "noUnknownAtRules": "off" }
+      }
     },
     "domains": { "next": "recommended", "react": "recommended" }
   },
@@ -41,13 +46,7 @@
         "organizeImports": {
           "level": "on",
           "options": {
-            "groups": [
-              { "type": true },
-              ":BLANK_LINE:",
-              ":PACKAGE:",
-              ":BLANK_LINE:",
-              ":ALIAS:"
-            ]
+            "groups": [{ "type": true }, ":BLANK_LINE:", ":PACKAGE:", ":BLANK_LINE:", ":ALIAS:"]
           }
         }
       }

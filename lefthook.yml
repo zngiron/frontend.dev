@@ -3,3 +3,8 @@ pre-commit:
     lint:
       glob: "*.{ts,tsx,js,jsx,json,css}"
       run: bunx biome check --no-errors-on-unmatched --files-ignore-unknown=true {staged_files}
+
+pre-push:
+  commands:
+    typecheck:
+      run: bun run typecheck

@@ -1,28 +1,13 @@
-import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import Image from 'next/image';
+
 import { SITE_NAME } from '@/lib/constants';
+
+const LOGO_SIZE = 64;
 
 export default function Home() {
   return (
-    <main className="flex min-h-dvh items-center justify-center p-8">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle className="text-2xl">{SITE_NAME}</CardTitle>
-          <CardDescription>
-            Lean Next.js starter. The rules live in CLAUDE.md.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="flex gap-3">
-          <Button>Get started</Button>
-          <Button variant="outline">Read the docs</Button>
-        </CardContent>
-      </Card>
+    <main className="flex min-h-dvh items-center justify-center">
+      <Image src="/static/frontend-dev-logo.svg" alt={SITE_NAME} width={LOGO_SIZE} height={LOGO_SIZE} priority />
     </main>
   );
 }

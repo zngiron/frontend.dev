@@ -1,19 +1,26 @@
 import type { Metadata } from 'next';
 
 import { Providers } from '@/components/core/providers';
-import { SITE_NAME, SITE_URL } from '@/lib/constants';
+import { Scripts } from '@/components/core/scripts';
+import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from '@/lib/constants';
 import { display, mono, sans } from '@/lib/fonts';
+import { cn } from '@/lib/utils';
 
-import './globals.css';
+import '@/app/globals.css';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: { default: SITE_NAME, template: `%s | ${SITE_NAME}` },
-  description: 'A lean Next.js starter template.',
+  title: {
+    default: SITE_NAME,
+    template: `%s | ${SITE_NAME}`,
+  },
+  description: SITE_DESCRIPTION,
   openGraph: {
     title: SITE_NAME,
-    description: 'A lean Next.js starter template.',
-    images: ['/static/frontend-dev-thumbnail.png'],
+    description: SITE_DESCRIPTION,
+    images: [
+      '/static/frontend-dev-thumbnail.png',
+    ],
   },
   icons: {
     icon: [
@@ -31,13 +38,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
-    <html
-      lang="en"
-      className={`${display.variable} ${sans.variable} ${mono.variable}`}
-      suppressHydrationWarning
-    >
+    <html lang="en" className={cn(display.variable, sans.variable, mono.variable)} suppressHydrationWarning>
       <body className="font-sans antialiased">
         <Providers>{children}</Providers>
+        <Scripts />
       </body>
     </html>
   );
